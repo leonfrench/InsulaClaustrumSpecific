@@ -1,0 +1,6 @@
+raw/*
+processed/*
+
+# exception to the rule
+!raw/.gitkeep 
+!processed/.gitkeep 
