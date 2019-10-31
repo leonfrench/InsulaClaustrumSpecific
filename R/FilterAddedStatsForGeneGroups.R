@@ -43,6 +43,8 @@ targetGroup <- "oxygen transport"
 targetGroup <- "dopamine receptor signaling pathway"
 targetGroup <- "nucleotide-sugar metabolic process"
 targetGroup <-"Severe mental retardation (I.Q. 20-34)"
+targetGroup <-"Epileptic encephalopathy"
+targetGroup <- "HIV Infections"
 
 
 
@@ -90,4 +92,3 @@ for (divisionFileName in targetRegions) {
     dplyr::arrange(desc(pValueWithDirection)) %>% 
     write_tsv(paste0(baseFilename, divisionFileName,".", targetGroup, ".",sourceExpression,".addedStats.tsv"))
 }
-

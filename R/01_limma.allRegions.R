@@ -6,11 +6,14 @@ detach("package:dplyr", unload=TRUE)
 library(dplyr)
 library(magrittr)
 library(limma)
-library(ggplot2)
 library(readr)
 
-inclusionPattern <- "insula"
-#inclusionPattern <- "claustrum"
+#inclusionPattern <- "habenula"
+#inclusionPattern <- "insula"
+inclusionPattern <- "claustrum"
+#inclusionPattern <- "middle frontal gyrus, (right|left), superior bank of gyrus"
+#inclusionPattern <- "middle frontal gyrus, superior bank of gyrus" #do left + right striping earlier
+#group ventral + dorsal for fetal
 neoCortexOnly <- FALSE
 
 #for fetal data
@@ -31,9 +34,20 @@ if (sourceExpression == "allen_HBA") {
   probeFilename <- "rows_metadata.csv"
   expressionFilename <- "expression_matrix.csv"
 }
+
+strip_left_right <- function(structure_name) {
+  tokens <- trimws(unlist(strsplit(structure_name, ",")))
+  tokens <- tokens[tokens != "left"]
+  tokens <- tokens[tokens != "right"]
+  cleaned_name <- paste(tokens, collapse = ", ")
+  cleaned_name
+}
+
+
 allsampleAnnot = NULL
 allExpression = NULL
 
+#this just checks to see how many samples match the inclusion pattern
 for (donorFolder in list.files(paste0("./data/raw/",sourceExpression,"/"), pattern = folderPattern)) {
   sampleAnnot <- read_csv(paste0("./data/raw/",sourceExpression,"/",donorFolder,"/",sampleFilename))
   
@@ -58,15 +72,7 @@ for (donorFolder in list.files(paste0("./data/raw/",sourceExpression,"/"), patte
     expressionMatrix <- read_csv(paste0("./data/raw/",sourceExpression,"/",donorFolder, "/",expressionFilename), col_names=F) 
     
     expressionMatrix %<>% rename(probe_id = X1)
-    dim(expressionMatrix)
     
-    strip_left_right <- function(structure_name) {
-      tokens <- trimws(unlist(strsplit(structure_name, ",")))
-      tokens <- tokens[tokens != "left"]
-      tokens <- tokens[tokens != "right"]
-      cleaned_name <- paste(tokens, collapse = ", ")
-      cleaned_name
-    }
     sampleAnnot %<>% rowwise() %>% mutate(structure_name_left_right_stripped = strip_left_right(structure_name))
     sampleAnnot %<>% mutate(donorID = donorFolder)
     if (sourceExpression == "allen_HBA") {
@@ -150,8 +156,8 @@ rownames(expressionMatrix) <- expressionMatrix$probe_name
 expressionMatrix$probe_name <- NULL
 
 #create probe mapping file here
-qc_table <- read_xlsx("./data/raw/gene_symbol_annotations/Miller et al. doi.org_10.1186_1471-2164-15-154 12864_2013_7016_MOESM8_ESM.xlsx",skip=1)
-qc_table %<>% select(probe_name = "..1", gene_symbol = "..2", is_qc_pass = `Pass?`)
+qc_table <- read_xlsx("./data/gene_symbol_annotations/Miller et al. doi.org_10.1186_1471-2164-15-154 12864_2013_7016_MOESM8_ESM.xlsx",skip=1)
+qc_table %<>% select(probe_name = "...1", gene_symbol = "...2", is_qc_pass = `Pass?`)
 
 #fix numeric gene symbols from excel date conversions
 qc_table <- inner_join( qc_table, probeInfo %>% select(probe_name, for_excel_problem = gene_symbol))

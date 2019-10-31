@@ -79,7 +79,6 @@ cbbPalette <- c("#E69F00", "#000000", "#000000", "#E69F00")
 #save as 6x6 pdf
 
 
-
 throwawayAUC <- combined
 throwawayAUC$rank <- -1*throwawayAUC$rank
 throwawayAUC$combinedLabel <- factor(throwawayAUC$combinedLabel, levels= c("Adult long insular gyri", "Adult short insular gyri",  "Fetal dysgranular insular cortex", "Fetal granular insular cortex"))
