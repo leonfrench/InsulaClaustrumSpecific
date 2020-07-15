@@ -1,6 +1,9 @@
 # InsulaClaustrumSpecific expression project
 Code to extract and characterize brain region specific expression (primarily from the Allen Brain Institute atlases)
 
+This code corresponds to the article titled: "Transcriptomic Characterization of the Human Insular Cortex and Claustrum"
+https://www.frontiersin.org/articles/10.3389/fnana.2019.00094/full
+
 This is a rough fork from the https://github.com/leonfrench/HumanHabenula project that generalized it and applied it to the insula and cluastrum regions. 
 
 
